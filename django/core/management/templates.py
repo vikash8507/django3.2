@@ -21,6 +21,24 @@ from django.utils import archive
 from django.utils.http import parse_header_parameters
 from django.utils.version import get_docs_version
 
+PSQL_DB = """DATABASES = {
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'database_name,
+       'USER': 'database_username',
+       'PASSWORD': 'password',
+       'HOST': 'database_hostname_or_ip',
+       'PORT': 'database_port',
+   }
+}"""
+
+SQLITE_DB = """DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+"""
 
 class TemplateCommand(BaseCommand):
     """
@@ -201,10 +219,12 @@ class TemplateCommand(BaseCommand):
                 if new_path.endswith(extensions) or filename in extra_files:
                     with open(old_path, encoding="utf-8") as template_file:
                         content = template_file.read()
+                        if old_path.endswith('settings.py-tpl'):
+                            print(content)
+                            content.replace(SQLITE_DB, PSQL_DB)
                     template = Engine().from_string(content)
                     content = template.render(context)
                     with open(new_path, "w", encoding="utf-8") as new_file:
-                        print(old_path, content)
                         new_file.write(content)
                 else:
                     shutil.copyfile(old_path, new_path)
