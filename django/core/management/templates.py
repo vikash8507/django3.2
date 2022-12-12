@@ -150,11 +150,11 @@ class TemplateCommand(BaseCommand):
         )
 
         # Setup a stub settings environment for template rendering
-        print(settings)
-        print(settings.__dict__)
         if not settings.configured:
             settings.configure()
             django.setup()
+        print(settings)
+        print(settings.__dict__)
 
         template_dir = self.handle_template(options["template"], base_subdir)
         prefix_length = len(template_dir) + 1
