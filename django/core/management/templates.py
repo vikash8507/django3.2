@@ -21,7 +21,8 @@ from django.utils import archive
 from django.utils.http import parse_header_parameters
 from django.utils.version import get_docs_version
 
-PSQL_DB = "DATABASES = {\n    \'default\': {\n    \'ENGINE\': \'django.db.backends.postgresql\',\n    \'NAME\': = \'database_name\',\n    \t\'USER\': = \'database_username\',\n    \t\'PASSWORD\': = \'database_password\',\n    \t\'HOST\': = \'database_HOST\',\n    \t\'PORT\': = \'database_port\',\n    }\n}\n"
+PSQL_DB = "DATABASES = {\n    \'default\': {\n    \'ENGINE\': \'django.db.backends.postgresql\',\n    \'NAME\': \'postgres_name\',\n    \'USER\': \'postgres_username\',\n    \'PASSWORD\': \'postgres_password\',\n    \'HOST\': \'postgres_HOST\',\n    \'PORT\': \'postgres_port\',\n    }\n}\n"
+MYSQL_DB = "DATABASES = {\n    \'default\': {\n    \'ENGINE\': \'django.db.backends.mysql\',\n    \'NAME\': \'mysql_name\',\n    \'USER\': \'mysql_username\',\n    \'PASSWORD\': \'mysql_password\',\n    \'HOST\': \'mysql_HOST\',\n    \'PORT\': \'mysql_port\',\n    }\n}\n"
 
 SQLITE_DB = "DATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.sqlite3',\n        'NAME': BASE_DIR / 'db.sqlite3',\n    }\n}"
 
@@ -50,6 +51,9 @@ class TemplateCommand(BaseCommand):
         parser.add_argument("name", help="Name of the application or project.")
         parser.add_argument(
             "directory", nargs="?", help="Optional destination directory"
+        )
+        parser.add_argument(
+            "--db", dest="use_db", default='sqlite', help="Which DB want to configure(Postgres, Mysql, Sqlite"
         )
         parser.add_argument(
             "--template", help="The path or URL to load the template from."
@@ -205,6 +209,8 @@ class TemplateCommand(BaseCommand):
                     with open(old_path, encoding="utf-8") as template_file:
                         content = template_file.read()
                         if old_path.endswith('settings.py-tpl'):
+                            print(options)
+                            print(options.get('use_db'))
                             content = content.replace(SQLITE_DB, PSQL_DB)
                     template = Engine().from_string(content)
                     content = template.render(context)
