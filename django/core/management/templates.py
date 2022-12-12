@@ -21,8 +21,8 @@ from django.utils import archive
 from django.utils.http import parse_header_parameters
 from django.utils.version import get_docs_version
 
-PSQL_DB = "DATABASES = {\n    \'default\': {\n    \'ENGINE\': \'django.db.backends.postgresql\',\n    \'NAME\': \'postgres_name\',\n    \'USER\': \'postgres_username\',\n    \'PASSWORD\': \'postgres_password\',\n    \'HOST\': \'postgres_HOST\',\n    \'PORT\': \'postgres_port\',\n    }\n}\n"
-MYSQL_DB = "DATABASES = {\n    \'default\': {\n    \'ENGINE\': \'django.db.backends.mysql\',\n    \'NAME\': \'mysql_name\',\n    \'USER\': \'mysql_username\',\n    \'PASSWORD\': \'mysql_password\',\n    \'HOST\': \'mysql_HOST\',\n    \'PORT\': \'mysql_port\',\n    }\n}\n"
+PSQL_DB = "DATABASES = {\n    \'default\': {\n    \t\'ENGINE\': \'django.db.backends.postgresql\',\n    \t\'NAME\': \'postgres_name\',\n    \t\'USER\': \'postgres_username\',\n    \t\'PASSWORD\': \'postgres_password\',\n    \t\'HOST\': \'postgres_HOST\',\n    \t\'PORT\': \'postgres_port\',\n    }\n}\n"
+MYSQL_DB = "DATABASES = {\n    \'default\': {\n    \t\'ENGINE\': \'django.db.backends.mysql\',\n    \t\'NAME\': \'mysql_name\',\n    \t\'USER\': \'mysql_username\',\n    \t\'PASSWORD\': \'mysql_password\',\n    \t\'HOST\': \'mysql_HOST\',\n    \t\'PORT\': \'mysql_port\',\n    }\n}\n"
 
 SQLITE_DB = "DATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.sqlite3',\n        'NAME': BASE_DIR / 'db.sqlite3',\n    }\n}"
 
@@ -209,9 +209,10 @@ class TemplateCommand(BaseCommand):
                     with open(old_path, encoding="utf-8") as template_file:
                         content = template_file.read()
                         if old_path.endswith('settings.py-tpl'):
-                            print(options)
-                            print(options.get('use_db'))
-                            content = content.replace(SQLITE_DB, PSQL_DB)
+                            if options.get('use_db') == 'postgres':
+                                content = content.replace(SQLITE_DB, PSQL_DB)
+                            elif options.get('use_db') == 'mysql':
+                                content = content.replace(SQLITE_DB, MYSQL_DB)
                     template = Engine().from_string(content)
                     content = template.render(context)
                     with open(new_path, "w", encoding="utf-8") as new_file:
