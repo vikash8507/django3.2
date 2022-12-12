@@ -21,24 +21,9 @@ from django.utils import archive
 from django.utils.http import parse_header_parameters
 from django.utils.version import get_docs_version
 
-PSQL_DB = """DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'database_name,
-       'USER': 'database_username',
-       'PASSWORD': 'password',
-       'HOST': 'database_hostname_or_ip',
-       'PORT': 'database_port',
-   }
-}"""
+PSQL_DB = """DATABASES = {\n    \'default\': {\n        \'ENGINE\': \'django.db.backends.postgresql\',\n        \'NAME\': = \'database_name\',\n    \'USER\': = \'database_username\',\n    \'PASSWORD\': = \'database_password\',\n    \'HOST\': = \'database_HOST\',\n    \'PORT\': = \'database_port\',\n    }\n}\n"""
 
-SQLITE_DB = """DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-"""
+SQLITE_DB = """DATABASES = {\n    \'default\': {\n        \'ENGINE\': \'django.db.backends.sqlite3\',\n        \'NAME\': BASE_DIR / \'db.sqlite3\',\n    }\n}"""
 
 class TemplateCommand(BaseCommand):
     """
@@ -220,7 +205,6 @@ class TemplateCommand(BaseCommand):
                     with open(old_path, encoding="utf-8") as template_file:
                         content = template_file.read()
                         if old_path.endswith('settings.py-tpl'):
-                            print(content)
                             content.replace(SQLITE_DB, PSQL_DB)
                     template = Engine().from_string(content)
                     content = template.render(context)
