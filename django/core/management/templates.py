@@ -150,6 +150,8 @@ class TemplateCommand(BaseCommand):
         )
 
         # Setup a stub settings environment for template rendering
+        print(settings)
+        print(settings.__dict__)
         if not settings.configured:
             settings.configure()
             django.setup()
