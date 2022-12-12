@@ -204,7 +204,7 @@ class TemplateCommand(BaseCommand):
                     template = Engine().from_string(content)
                     content = template.render(context)
                     with open(new_path, "w", encoding="utf-8") as new_file:
-                        print(new_path, content)
+                        print(old_path, content)
                         new_file.write(content)
                 else:
                     shutil.copyfile(old_path, new_path)
