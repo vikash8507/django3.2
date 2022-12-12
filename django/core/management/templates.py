@@ -153,8 +153,6 @@ class TemplateCommand(BaseCommand):
         if not settings.configured:
             settings.configure()
             django.setup()
-        print(settings)
-        print(settings.__dict__)
 
         template_dir = self.handle_template(options["template"], base_subdir)
         prefix_length = len(template_dir) + 1
@@ -206,6 +204,7 @@ class TemplateCommand(BaseCommand):
                     template = Engine().from_string(content)
                     content = template.render(context)
                     with open(new_path, "w", encoding="utf-8") as new_file:
+                        print(new_path, content)
                         new_file.write(content)
                 else:
                     shutil.copyfile(old_path, new_path)
