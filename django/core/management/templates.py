@@ -7,6 +7,7 @@ import stat
 import tempfile
 from importlib import import_module
 from urllib.request import build_opener
+from pip._internal import main as pipmain
 
 import django
 from django.conf import settings
@@ -208,11 +209,16 @@ class TemplateCommand(BaseCommand):
                 if new_path.endswith(extensions) or filename in extra_files:
                     with open(old_path, encoding="utf-8") as template_file:
                         content = template_file.read()
-                        if old_path.endswith('settings.py-tpl'):
+                        if old_path.endswith('settings.py-tpl') and options.get('use_db') != 'sqlite':
                             if options.get('use_db') == 'postgres':
                                 content = content.replace(SQLITE_DB, PSQL_DB)
+                                pipmain(['install', 'psycopg2'])
                             elif options.get('use_db') == 'mysql':
                                 content = content.replace(SQLITE_DB, MYSQL_DB)
+                                pipmain(['install', 'mysqlclient'])
+                            pipmain(['list',])
+                            print("DB Connector Installed...")
+                            print("Change your db credentianls accordingly...")
                     template = Engine().from_string(content)
                     content = template.render(context)
                     with open(new_path, "w", encoding="utf-8") as new_file:
