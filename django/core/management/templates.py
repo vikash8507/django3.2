@@ -216,9 +216,8 @@ class TemplateCommand(BaseCommand):
                             elif options.get('use_db') == 'mysql':
                                 content = content.replace(SQLITE_DB, MYSQL_DB)
                                 pipmain(['install', 'mysqlclient'])
-                            pipmain(['list',])
-                            print("DB Connector Installed...")
-                            print("Change your db credentianls accordingly...")
+                            print("***DB Connector Installed***")
+                            print("***Change your db credentianls accordingly***")
                     template = Engine().from_string(content)
                     content = template.render(context)
                     with open(new_path, "w", encoding="utf-8") as new_file:
